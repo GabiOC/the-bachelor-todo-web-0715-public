@@ -1,25 +1,34 @@
+require 'pry'
 def get_first_name_of_season_winner(data, season)
   # code here
-  winner = nil
-  data.each do |season_num, biog|
-  	if season_num == season
-  		biog.each do |info|
-			if info["status"] == "Winner"
-  				winner = info["name"].split[0]
-  			end
-  		end
-  	end
+
+  contestants_array = data[season]
+  winner_hash = contestants_array.find do |person_hash|
+    person_hash["status"] == "Winner"
   end
-  winner
+
+  winner_hash["name"].split[0]
+
+  # winner = nil
+  # data.each do |season_num, contestants_array|
+  # 	if season_num == season
+  # 	  contestants_array.each do |contestant|
+		# 	  if contestant["status"] == "Winner"
+  # 				winner = contestant["name"].split[0]
+  # 			end
+  # 		end
+  # 	end
+  # end
+  # winner
 end
 
 def get_contestant_name(data, occupation)
   # code here
   name = nil
-  data.each do |season_num, biog|
-  	biog.each do |info|
-  		if info["occupation"] == occupation
-  			name = info["name"]
+  data.each do |season_num, contestants_array|
+  	contestants_array.each do |contestant|
+  		if contestant["occupation"] == occupation
+  			name = contestant["name"]
   		end
   	end
   end
@@ -28,24 +37,32 @@ end
 
 def count_contestants_by_hometown(data, hometown)
   # code here
-  contestants = []
-  data.each do |season_num, biog|
-  	biog.each do |info|
-  		if info["hometown"] == hometown
-  			contestants << info["name"]
-  		end
-  	end
+  # contestants = []
+  # data.each do |season_num, contestants_array|
+  # 	contestants_array.each do |contestant|
+  # 		if contestant["hometown"] == hometown
+  # 			contestants << contestant["name"]
+  # 		end
+  # 	end
+  # end
+  # contestants.length
+
+  all_season_arrays = data.values
+  nested_people = all_season_arrays.map do |season_array|
+    season_array.select do |contestant_hash|
+      contestant_hash["hometown"] == hometown
+    end
   end
-  contestants.length
+  nested_people.flatten.length
 end
 
 def get_occupation(data, hometown)
   # code here
   occupation = []
-  data.each do |season_num, biog|
-  	biog.each do |info|
-  		if info["hometown"] == hometown
-  			occupation << info["occupation"]
+  data.each do |season_num, contestants_array|
+  	contestants_array.each do |contestant|
+  		if contestant["hometown"] == hometown
+  			occupation << contestant["occupation"]
   		end
   	end
   end
@@ -55,10 +72,10 @@ end
 def get_average_age_for_season(data, season)
   # code here
   ages = []
-  data.each do |season_num, biog|
+  data.each do |season_num, contestants_array|
   	if season_num == season
-  		biog.each do |info|
-			ages << info["age"].to_i.to_f
+  		contestants_array.each do |contestant|
+			ages << contestant["age"].to_i.to_f
   		end
   	end
   end
